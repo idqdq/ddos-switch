@@ -1,4 +1,3 @@
-from dns.flags import AA
 from fastapi import FastAPI, BackgroundTasks
 from pydantic import BaseModel
 from ipaddress import IPv4Address
@@ -11,7 +10,7 @@ from typing import Optional
 TTL = 5
 SECRET_KEY = os.environ.get('SECRET_KEY') or 'Li1upae4ohl8cudoohahx8EuT1ke4bai9Uthu2kei2ayooj5IeghooQuaephae1e'
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_DAYS = 30
 
 app = FastAPI()
 
@@ -45,9 +44,7 @@ async def ddosornotddos(data: Data, background_tasks: BackgroundTasks):
 @app.post("/api/ddosornotddosjwt")
 async def ddosornotddos(token: str, background_tasks: BackgroundTasks):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-#       return {"payload": payload }
-
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])     
         del payload["exp"]
         data = Data(**payload)
 
@@ -83,7 +80,7 @@ def gettoken(data: Data):
         "ddos": data.ddos,
     }
 
-    access_token_expires = timedelta(days=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
     access_token = create_access_token(
         data=newdata, expires_delta=access_token_expires
     )
