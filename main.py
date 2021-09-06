@@ -18,7 +18,8 @@ class Data(BaseModel):
     name: str
     prim_IP: IPv4Address
     subst_IP: IPv4Address
-    TSIG: str
+    tsig_keyname: str
+    tsig_secret: str
     ddos: bool = True
     
 
@@ -41,7 +42,7 @@ async def ddosornotddos(data: Data, background_tasks: BackgroundTasks):
     except:
         return ":x: something went wrong"
 
-@app.post("/api/ddosornotddosjwt")
+@app.get("/api/ddosornotddosjwt")
 async def ddosornotddos(token: str, background_tasks: BackgroundTasks):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])     
@@ -76,7 +77,8 @@ def gettoken(data: Data):
         "name": data.name,
         "prim_IP": str(data.prim_IP),
         "subst_IP": str(data.subst_IP),
-        "TSIG": data.TSIG,
+        "tsig_keyname": data.tsig_keyname,
+        "tsig_secret": data.tsig_secret,
         "ddos": data.ddos,
     }
 
@@ -87,4 +89,10 @@ def gettoken(data: Data):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-# d = { "name": "acs", "prim_IP": "195.230.111.106", "subst_IP": "82.202.189.51", "TSIG": "fKwttnpfMaD10CKh0/QqV13sBiGUvRDtRTLbwTdxpbw=", "ddos": True}
+# d = { "name": "acs", 
+#       "prim_IP": "195.230.111.106",
+#       "subst_IP": "82.202.189.51", 
+#       "tsig_keyname": "acs.key", 
+#       "tsig_secret": "fKwttnpfMaD10CKh0/QqV13sBiGUvRDtRTLbwTdxpbw=", 
+#       "ddos": True
+# }

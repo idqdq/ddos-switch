@@ -15,7 +15,7 @@ ZONE = 'test.arpa.'
 DNS_SERV = '127.0.0.1'
 
 def doDNSUpdate(data):    
-    keyring = tsigkeyring.from_text({'acs.key': data.TSIG })
+    keyring = tsigkeyring.from_text({data.tsig_keyname: data.tsig_secret })
     IP = str(data.subst_IP) if data.ddos else str(data.prim_IP)
 
     upd = update.Update(ZONE, keyring=keyring, keyalgorithm=HMAC_SHA256)
