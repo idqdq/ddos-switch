@@ -2,15 +2,10 @@ from fastapi import FastAPI, BackgroundTasks
 from pydantic import BaseModel
 from ipaddress import IPv4Address
 from tasks import doDNSUpdate, waitTTLsecs, blackHole
-import os
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
-
-TTL = 5
-SECRET_KEY = os.environ.get('SECRET_KEY') or 'Li1upae4ohl8cudoohahx8EuT1ke4bai9Uthu2kei2ayooj5IeghooQuaephae1e'
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_DAYS = 30
+from config import *
 
 app = FastAPI()
 
@@ -26,7 +21,7 @@ class Data(BaseModel):
 def planttasks(data, background_tasks):
     # 3 tasks:
     # 1 - DNS Update
-    # 2 - wait for 300 sec
+    # 2 - wait for TTL (300) secs
     # 3 - make a scrapli call to RTHB prim_IP on the router
 
     background_tasks.add_task(doDNSUpdate, data=data)
@@ -51,7 +46,7 @@ async def ddosornotddos(token: str, background_tasks: BackgroundTasks):
 
         try:
             planttasks(data, background_tasks)        
-            return "tasks planted successfully"
+            return ":robot: tasks planted successfully"
         except: 
             return ":x: something went wrong"
 
