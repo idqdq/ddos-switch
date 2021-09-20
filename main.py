@@ -29,6 +29,17 @@ def planttasks(data, background_tasks):
     background_tasks.add_task(blackHole, ip=data.prim_IP, ddos=data.ddos)
 
 
+# data example:
+# data = { "name": "acs", 
+#       "prim_IP": "195.230.111.106",
+#       "subst_IP": "82.202.189.51", 
+#       "tsig_keyname": "acs.key", 
+#       "tsig_secret": "fKwttnpfMaD10CKh0/QqV13sBiGUvRDtRTLbwTdxpbw=", 
+#       "ddos": True
+# }
+
+
+# cover/uncover (depends on ddos: True/False) a service described with the data object
 @app.post("/api/ddosornotddos")
 async def ddosornotddos(data: Data, background_tasks: BackgroundTasks):
     try:
@@ -37,8 +48,10 @@ async def ddosornotddos(data: Data, background_tasks: BackgroundTasks):
     except:
         return ":x: something went wrong"
 
+
+# cover/uncover a service described with a data object wich is encoded in a JWT token
 @app.get("/api/ddosornotddosjwt")
-async def ddosornotddos(token: str, background_tasks: BackgroundTasks):
+async def ddosornotddosjwt(token: str, background_tasks: BackgroundTasks):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])     
         del payload["exp"]
@@ -54,7 +67,7 @@ async def ddosornotddos(token: str, background_tasks: BackgroundTasks):
         return ":x: token is not valid"
 
 
-## JWT
+## JWT helper function
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -65,6 +78,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+# takes a data object and returns a JWT token 
+# it then can be used in the ddosornotddosjwt function (api hook)
 @app.post("/api/gettoken")
 def gettoken(data: Data):
 
@@ -82,12 +97,3 @@ def gettoken(data: Data):
         data=newdata, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
-
-
-# d = { "name": "acs", 
-#       "prim_IP": "195.230.111.106",
-#       "subst_IP": "82.202.189.51", 
-#       "tsig_keyname": "acs.key", 
-#       "tsig_secret": "fKwttnpfMaD10CKh0/QqV13sBiGUvRDtRTLbwTdxpbw=", 
-#       "ddos": True
-# }

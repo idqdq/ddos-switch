@@ -8,8 +8,8 @@ Task is devided on three subtasks:
 2. wait TTL seconds
 3. Blackholing (RTHB) the old IP
 
-there is just one route (api endpoint): *"/api/ddos"* with only **POST** method applied  
-the payload must much the following data model:
+there are three routes (api endpoints):  
+  1.  */api/ddosornotddos* - **POST** method. The payload must much the following data model:
 
 ```python
 class Data(BaseModel):
@@ -19,3 +19,6 @@ class Data(BaseModel):
     TSIG: str
     ddos: bool = True
 ```
+
+  2. */api/ddosornotddosjwt?token=JWT* - **GET** method. It takes a **JWT** token that contains an encoded data (model Data)
+  3. */api/gettoken* - **POST** method. It takes the data (model Data) and encode it into a **JWT** Token
