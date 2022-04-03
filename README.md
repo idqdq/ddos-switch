@@ -22,3 +22,7 @@ class Data(BaseModel):
 
   2. */api/ddosornotddosjwt?token=JWT* - **GET** method. It takes a **JWT** token that contains an encoded data (model Data)
   3. */api/gettoken* - **POST** method. It takes the data (model Data) and encode it into a **JWT** Token
+
+method 2 and 3 can be convienent to use in case of an untrusted environment such a chatbot  
+with the *gettoken* method you prepare the token with all the data encoded  
+with the *ddosornotddos* method push that token in case of ddos 
